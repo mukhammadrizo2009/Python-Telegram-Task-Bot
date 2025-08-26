@@ -1,28 +1,11 @@
 import psycopg2
 from telegram import Update , InlineKeyboardMarkup , InlineKeyboardButton , ReplyKeyboardRemove
 from telegram.ext import CallbackContext
-import config
-
-connection = psycopg2.connect(
-    host=config.HOST,
-    port=int(config.PORT),
-    user=config.USER,
-    password=config.PASSWORD,
-    dbname=config.DBNAME
-)
-
-cursor = connection.cursor()
 
 
 def start(update: Update , context: CallbackContext):
     bot = context.bot
     user = update.effective_user
-    
-    cursor.execute(
-        "INSERT INTO users (telegram_id, first_name) VALUES (%s, %s) ON CONFLICT (telegram_id) DO NOTHING",
-        (user.id, user.first_name)
-    )
-    connection.commit()
     
     bot.send_message(
     chat_id=user.id,
@@ -41,6 +24,7 @@ def start(update: Update , context: CallbackContext):
             ]
         )
     )
+    
     
 def stop(update: Update , context: CallbackContext) -> None:
     bot = context.bot
